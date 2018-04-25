@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.noriental.persistence.v3.mapper.dao.RetrieveIndexDao">
+    <!-- select part -->
+    <sql id="quizSelectPart">
+        select
+            (select bb.org_id from neworiental_user.entity_user bb where bb.system_id=a.upload_id) org_id,
+            (select group_concat('series_id:',aa.series_id, '`~`','series_name:', bb.`name` separator '`|`')
+               from link_question_series aa, entity_seriess bb where aa.question_id = a.id and aa.series_id = bb.id) __series,
+            (select group_concat('topic_id:',aa.topic_id, '`~`','topic_mastery:',ifnull(aa.mastery,0), '`~`','topic_name:',bb.`name` separator '`|`' )
+               from link_question_topic aa, entity_topic bb where aa.question_id = a.id and aa.topic_id = bb.id) __topic,
+            (select group_concat('chapter_id:',aa.chapter_id separator '`|`') from link_question_chapter aa where aa.question_id = a.id) __chapter,
+            (select group_concat('chapter_id1:',aa.chapter_id separator '`|`') from link_question_chapter aa /*一级章节*/
+               left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=1
+              where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=1) __chapter1,
+            (select group_concat('chapter_id2:',aa.chapter_id,'`~`','chapter_id1:',bb.parent_id separator '`|`') from link_question_chapter aa
+               left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=2  /*二级章节并关联出父一级章节*/
+              where aa.question_id = a.id) __chapter2,
+            (select group_concat('chapter_id3:',aa.chapter_id,'`~`','chapter_id2:',bb.parent_id,'`~`','chapter_id1:',cc.parent_id separator '`|`')
+               from link_question_chapter aa
+               left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=3  /*三级章节并关联出父二级章节及祖父一级章节*/
+               left join entity_teaching_chapter cc on cc.id=bb.parent_id
+              where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=3) __chapter3,
+            (select group_concat('custom_list_id:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa where aa.question_id = a.id) __directory,
+            (select group_concat('custom_list_id1:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa /*一级目录*/
+               left join entity_custom_list bb on bb.id= aa.custom_list_id and bb.`level`=1
+              where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=1) __directory1,
+            (select group_concat('custom_list_id2:',aa.custom_list_id,'`~`','custom_list_id1:',bb.parent_id separator '`|`') from link_custom_question_resource aa
+               left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=2  /*二级目录并关联出父一级目录*/
+              where aa.question_id = a.id) __directory2,
+            (select group_concat('custom_list_id3:',aa.custom_list_id,'`~`','custom_list_id2:',bb.parent_id,'`~`','custom_list_id1:',cc.parent_id separator '`|`')
+               from link_custom_question_resource aa
+               left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=3  /*三级目录并关联出父二级目录及祖父一级目录*/
+               left join entity_custom_list cc on cc.id=bb.parent_id
+              where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=3) __directory3,
+            (case when b.question_id is not null then (case when b.same_num is null then (0-a.id) else (b.same_num-9223372036854775807) end)
+                  when c.question_id is not null then (c.same_num) else (0-a.id) end) same_num,
+            (case when b.question_id is not null then b.same_score
+                  when c.question_id is not null then c.same_score else null end) same_score,
+            (case when b.question_id is not null then b.create_time
+                  when c.question_id is not null then c.create_time else null end) create_time, a.*, d.`name` question_group_name
+    </sql>
+    <!-- -->
+    <sql id="RetrieveWhere">
+        <if test="condition!=null or (list!=null and list.size()>0)">
+            where 1=1
+        </if>
+        <if test="condition!=null">
+            and ${condition}
+        </if>
+        <if test="list!=null and list.size()>0 ">
+            and a.id in
+            <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="start!=null and rows!=null">
+            limit ${start}, ${rows}
+        </if>
+    </sql>
+    <!-- by page -->
+    <select id="retrieveIndex" resultType="hashmap">
+        <if test="core=='quiz'">
+            <include refid="quizSelectPart"/>
+            from entity_question a
+            left join (select bb.* from (select aaa.same_num,max(aaa.same_score) same_score
+                       from entity_question_same aaa group by aaa.same_num ) aa
+            left join entity_question_same bb on bb.same_num=aa.same_num and bb.same_score=aa.same_score) b on b.question_id=a.id
+            left join entity_question_same c on c.question_id=a.id and b.question_id is null
+            left join entity_group d on d.id=a.question_group
+            <include refid="RetrieveWhere"/>
+        </if>
+    </select>
+    <!-- -->
+    <select id="selectQuizByGroupId" resultType="hashmap">
+        <include refid="quizSelectPart"/>
+        from entity_question a
+        left join (select bb.* from (select aaa.same_num,max(aaa.same_score) same_score
+        from entity_question_same aaa group by aaa.same_num ) aa
+        left join entity_question_same bb on bb.same_num=aa.same_num and bb.same_score=aa.same_score) b on b.question_id=a.id
+        left join entity_question_same c on c.question_id=a.id and b.question_id is null
+        left join entity_group d on d.id=a.question_group
+        where a.question_group=#{groupId}
+    </select>
+
+    <!-- -->
+    <select id="selectByQuestionIdList" resultType="hashmap">
+        select lt.question_id questionId,t.id topicId,u.id unitId,m.id moduleId
+        from link_question_topic lt,entity_unit u,entity_module m,entity_topic t
+        where t.id = lt.topic_id and t.unit_id = u.id and u.module_id = m.id
+        <if test="list!=null and list.size()>0 ">
+            and lt.question_id in
+            <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <!-- -->
+    <select id="fetchIdBetween" resultType="Long">
+        select a.${column} from ${table} a where a.${column}&gt;=${minId} and a.${column}&lt;=${maxId} order by a.${column} asc
+    </select>
+    <!-- -->
+    <select id="fetchIdLimit" resultType="Long">
+        select a.${column} from ${table} a order by a.${column} asc limit ${start}, ${rows}
+    </select>
+    <!-- -->
+    <select id="fetchIdLimitBoundary" resultType="Long">
+        <if test="sort == 'asc'">
+            select a.${column} from ${table} a where a.${column} &gt; ${boundary} order by a.${column} asc limit ${rows}
+        </if>
+        <if test="sort == 'desc'">
+            select a.${column} from ${table} a where a.${column} &lt; ${boundary} order by a.${column} desc limit
+            ${rows}
+        </if>
+    </select>
+    <!-- -->
+    <select id="countTable" resultType="Long">
+        select count(1) c from ${table}
+    </select>
+
+</mapper>

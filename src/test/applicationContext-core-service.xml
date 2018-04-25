@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
+	<context:property-placeholder location="classpath:wx.properties" ignore-unresolvable="true"/>
+
+
+	<bean id="thirdPartyInterfaceUtil" class="com.fuscent.core.service.impl.thirdparty.util.ThirdPartyInterfaceUtil" />
+
+	<!-- Service Bean -->
+	<bean id="userService" class="com.fuscent.core.service.impl.UserServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanService" class="com.fuscent.core.service.impl.LoanServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanInvestorService" class="com.fuscent.core.service.impl.LoanInvestorServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="partiallyAdvanceReturnRecordService" class="com.fuscent.core.service.impl.PartiallyAdvanceReturnRecordServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userInfoService" class="com.fuscent.core.service.impl.UserInfoServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userPicService" class="com.fuscent.core.service.impl.UserPicServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="authenRecordService" class="com.fuscent.core.service.impl.AuthenRecordServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanPicService" class="com.fuscent.core.service.impl.LoanPicServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="bankCardService" class="com.fuscent.core.service.impl.BankCardServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="innerMailService" class="com.fuscent.core.service.impl.InnerMailServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userNoticeService" class="com.fuscent.core.service.impl.UserNoticeServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="ipAddressLocationService" class="com.fuscent.core.service.impl.IpAddressLocationServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanCommentService" class="com.fuscent.core.service.impl.LoanCommentServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanManageService" class="com.fuscent.core.service.impl.LoanManageServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="investorService" class="com.fuscent.core.service.impl.InvestorServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="cashWithdrawService" class="com.fuscent.core.service.impl.CashWithdrawServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="blackListService" class="com.fuscent.core.service.impl.BlackListServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="remittanceService" class="com.fuscent.core.service.impl.RemittanceServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="borrowerService" class="com.fuscent.core.service.impl.BorrowerServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="notificationConfigService" class="com.fuscent.core.service.impl.NotificationConfigServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userSecurityQuestionService" class="com.fuscent.core.service.impl.UserSecurityQuestionServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="creditReportService" class="com.fuscent.core.service.impl.CreditReportServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="creditMaterialService" class="com.fuscent.core.service.impl.CreditMaterialServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="expertScoreCardService" class="com.fuscent.core.service.impl.ExpertScoreCardServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="creditRightsService" class="com.fuscent.core.service.impl.CreditRightsServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanQuartzService" class="com.fuscent.core.service.impl.LoanQuartzServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userAutoInvestService" class="com.fuscent.core.service.impl.UserAutoInvestServiceImpl" init-method="startSystemAutoInvest" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="collectionService" class="com.fuscent.core.service.impl.CollectionServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="userStatisticService" class="com.fuscent.core.service.impl.UserStatisticServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="platformStatisticsService" class="com.fuscent.core.service.impl.PlatformStatisticsServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="userInvitedService" class="com.fuscent.core.service.impl.UserInvitedServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="userVipInvestorService" class="com.fuscent.core.service.impl.UserVipInvestorServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="financialReportService" class="com.fuscent.core.service.impl.FinancialReportServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="couponService" class="com.fuscent.core.service.impl.CouponServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="financePlanService" class="com.fuscent.core.service.impl.FinancePlanServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="interlinkageService" class="com.fuscent.core.service.impl.InterlinkageServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="keyValueCacheService" class="com.fuscent.core.service.impl.KeyValueCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="loanCacheService" class="com.fuscent.core.service.impl.LoanCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="creditRightCacheService" class="com.fuscent.core.service.impl.CreditRightCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userCacheService" class="com.fuscent.core.service.impl.UserCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="channelCacheService" class="com.fuscent.core.service.impl.ChannelCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="investRankingService" class="com.fuscent.core.service.impl.InvestRankingServiceImpl" scope="singleton" init-method="init">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="coreApiService" class="com.fuscent.core.service.impl.CoreApiServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="smsService" class="com.fuscent.core.service.impl.SmsServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="cashflowCheckService" class="com.fuscent.core.service.impl.CashFlowCheckServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="newsService" class="com.fuscent.core.service.impl.NewsServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="financePlanCacheService" class="com.fuscent.core.service.impl.FinancePlanCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="promotionService" class="com.fuscent.core.service.impl.PromotionServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="promotionMgmtService" class="com.fuscent.core.service.impl.PromotionMgmtServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="refundService" class="com.fuscent.core.service.impl.RefundServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="loanOrgService" class="com.fuscent.core.service.impl.LoanOrgServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="financeOrgService" class="com.fuscent.core.service.impl.FinanceOrgServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="thirdPartyChannelService" class="com.fuscent.core.service.impl.ThirdPartyChannelServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="electronicReceiptService" class="com.fuscent.core.service.impl.ElectronicReceiptServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="semVisitRecordService" class="com.fuscent.core.service.impl.SemVisitRecordServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="thirdPartyService" class="com.fuscent.core.service.impl.thirdparty.ThirdPartyServiceImpl" scope="singleton" init-method="init">
+	</bean>
+
+	<bean id="quickPaymentService" class="com.fuscent.core.service.impl.QuickPaymentServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="currencyFundService" class="com.fuscent.core.service.impl.CurrencyFundServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="currencyFundMgmtService" class="com.fuscent.core.service.impl.CurrencyFundMgmtServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="financePlanVService" class="com.fuscent.core.service.impl.FinancePlanVServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+
+	<bean id="secondContactService" class="com.fuscent.core.service.impl.SecondContactServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="mgmtReportService" class="com.fuscent.core.service.impl.MgmtReportServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="appointmentService" class="com.fuscent.core.service.impl.AppointmentServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="appointmentMgmtService" class="com.fuscent.core.service.impl.AppointmentMgmtServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="rechargeService" class="com.fuscent.core.service.impl.RechargeServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="redemptionService" class="com.fuscent.core.service.impl.RedemptionServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="channelService" class="com.fuscent.core.service.impl.ChannelServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="financePlanStatisticsService" class="com.fuscent.core.service.impl.FinancePlanStatisticsServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="noviceCacheService" class="com.fuscent.core.service.impl.NoviceCacheServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="rechargeCancelPayService" class="com.fuscent.core.service.impl.RechargeCancelPayServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="userSignService" class="com.fuscent.core.service.impl.UserSignServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="umpayTransService" class="com.fuscent.core.service.impl.UmpayTransServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="dkidCardService" class="com.fuscent.core.service.impl.DkidCardServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="needCancelTranService" class="com.fuscent.core.service.impl.NeedCancelTranServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="accountCoreService" class="com.fuscent.core.service.impl.AccountCoreServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="workdayService" class="com.fuscent.core.service.impl.WorkdayServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="userBirthdayCouponService" class="com.fuscent.core.service.impl.UserBirthdayCouponServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="couponExpireRemindService" class="com.fuscent.core.service.impl.CouponExpireRemindServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="thirdPartyPayService" class="com.fuscent.core.service.impl.ThirdPartyPayServiceImpl">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+	<bean id="loanExtentionService" class="com.fuscent.core.service.impl.LoanExtentionServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="vWealthUserService" class="com.fuscent.core.service.impl.VWealthUserServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="thirdPartyManagerService" class="com.fuscent.core.service.impl.ThirdPartyManagerServiceImpl" scope="singleton">
+		<property name="writableSQLSession" ref="writableSQLSession" />
+		<property name="readonlySQLSession" ref="readonlySQLSession" />
+	</bean>
+
+	<bean id="wXJsapiService" class="com.fuscent.core.service.impl.WXJsapiServiceImpl" scope="singleton">
+		<property name="appid" value="${appid}" />
+		<property name="secret" value="${secret}" />
+	</bean>
+
+	<!-- 开始通过RmiServiceExporter向外暴露service -->
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<!-- 该属性表示提供服务的类 -->
+		<property name="service"><ref bean="userService"/></property>
+		<!-- 该属性表示服务名 -->
+		<property name="serviceName"><value>userService</value></property>
+		<!-- 该属性表示服务接口名 -->
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserService</value></property>
+		<!-- 该属性表示服务端口 -->
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanService"/></property>
+		<property name="serviceName"><value>loanService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="remittanceService"/></property>
+		<property name="serviceName"><value>remittanceService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IRemittanceService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanInvestorService"/></property>
+		<property name="serviceName"><value>loanInvestorService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanInvestorService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="partiallyAdvanceReturnRecordService"/></property>
+		<property name="serviceName"><value>partiallyAdvanceReturnRecordService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IPartiallyAdvanceReturnRecordService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userInfoService"/></property>
+		<property name="serviceName"><value>userInfoService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserInfoService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userPicService"/></property>
+		<property name="serviceName"><value>userPicService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserPicService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="authenRecordService"/></property>
+		<property name="serviceName"><value>authenRecordService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IAuthenRecordService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanPicService"/></property>
+		<property name="serviceName"><value>loanPicService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanPicService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="bankCardService"/></property>
+		<property name="serviceName"><value>bankCardService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IBankCardService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="ipAddressLocationService"/></property>
+		<property name="serviceName"><value>ipAddressLocationService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IIpAddressLocationService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanCommentService"/></property>
+		<property name="serviceName"><value>loanCommentService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanCommentService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="thirdPartyService"/></property>
+		<property name="serviceName"><value>thirdPartyService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IThirdPartyService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="innerMailService"/></property>
+		<property name="serviceName"><value>innerMailService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IInnerMailService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanManageService"/></property>
+		<property name="serviceName"><value>loanManageService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanManageService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userNoticeService"/></property>
+		<property name="serviceName"><value>userNoticeService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserNoticeService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="investorService"/></property>
+		<property name="serviceName"><value>investorService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IInvestorService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="cashWithdrawService"/></property>
+		<property name="serviceName"><value>cashWithdrawService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICashWithdrawService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="blackListService"/></property>
+		<property name="serviceName"><value>blackListService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IBlackListService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="borrowerService"/></property>
+		<property name="serviceName"><value>borrowerService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IBorrowerService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="notificationConfigService"/></property>
+		<property name="serviceName"><value>notificationConfigService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.INotificationConfigService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userSecurityQuestionService"/></property>
+		<property name="serviceName"><value>userSecurityQuestionService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserSecurityQuestionService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="creditReportService"/></property>
+		<property name="serviceName"><value>creditReportService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICreditReportService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="creditMaterialService"/></property>
+		<property name="serviceName"><value>creditMaterialService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICreditMaterialService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="expertScoreCardService"/></property>
+		<property name="serviceName"><value>expertScoreCardService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IExpertScoreCardService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="creditRightsService"/></property>
+		<property name="serviceName"><value>creditRightsService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICreditRightsService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanQuartzService"/></property>
+		<property name="serviceName"><value>loanQuartzService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanQuartzService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="collectionService"/></property>
+		<property name="serviceName"><value>collectionService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICollectionService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userStatisticService"/></property>
+		<property name="serviceName"><value>userStatisticService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserStatisticService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="platformStatisticsService"/></property>
+		<property name="serviceName"><value>platformStatisticsService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IPlatformStatisticsService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userInvitedService"/></property>
+		<property name="serviceName"><value>userInvitedService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserInvitedService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userVipInvestorService"/></property>
+		<property name="serviceName"><value>userVipInvestorService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserVipInvestorService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userAutoInvestService"/></property>
+		<property name="serviceName"><value>userAutoInvestService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserAutoInvestService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financialReportService"/></property>
+		<property name="serviceName"><value>financialReportService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IFinancialReportService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="couponService"/></property>
+		<property name="serviceName"><value>couponService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICouponService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financePlanService"/></property>
+		<property name="serviceName"><value>financePlanService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IFinancePlanService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="interlinkageService"/></property>
+		<property name="serviceName"><value>interlinkageService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IInterlinkageService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="keyValueCacheService"/></property>
+		<property name="serviceName"><value>keyValueCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IKeyValueCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanCacheService"/></property>
+		<property name="serviceName"><value>loanCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="creditRightCacheService"/></property>
+		<property name="serviceName"><value>creditRightCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICreditRightCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userCacheService"/></property>
+		<property name="serviceName"><value>userCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="channelCacheService"/></property>
+		<property name="serviceName"><value>channelCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IChannelCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="investRankingService"/></property>
+		<property name="serviceName"><value>investRankingService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IInvestRankingService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="coreApiService"/></property>
+		<property name="serviceName"><value>coreApiService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICoreApiService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="smsService"/></property>
+		<property name="serviceName"><value>smsService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ISmsService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="cashflowCheckService"/></property>
+		<property name="serviceName"><value>cashflowCheckService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICashFlowCheckService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="newsService"/></property>
+		<property name="serviceName"><value>newsService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.INewsService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financePlanCacheService"/></property>
+		<property name="serviceName"><value>financePlanCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IFinancePlanCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="promotionService"/></property>
+		<property name="serviceName"><value>promotionService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IPromotionService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="promotionMgmtService"/></property>
+		<property name="serviceName"><value>promotionMgmtService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IPromotionMgmtService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="refundService"/></property>
+		<property name="serviceName"><value>refundService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IRefundService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanOrgService"/></property>
+		<property name="serviceName"><value>coreLoanOrgService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICoreLoanOrgService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financeOrgService"/></property>
+		<property name="serviceName"><value>coreFinanceOrgService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICoreFinanceOrgService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="electronicReceiptService"/></property>
+		<property name="serviceName"><value>electronicReceiptService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IElectronicReceiptService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="thirdPartyChannelService"/></property>
+		<property name="serviceName"><value>thirdPartyChannelService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IThirdPartyChannelService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="quickPaymentService"/></property>
+		<property name="serviceName"><value>quickPaymentService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IQuickPaymentService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="semVisitRecordService"/></property>
+		<property name="serviceName"><value>semVisitRecordService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ISemVisitRecordService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="currencyFundService"/></property>
+		<property name="serviceName"><value>currencyFundService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICurrencyFundService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="currencyFundMgmtService"/></property>
+		<property name="serviceName"><value>currencyFundMgmtService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ICurrencyFundMgmtService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financePlanVService"/></property>
+		<property name="serviceName"><value>financePlanVService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IFinancePlanVService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="mgmtReportService"/></property>
+		<property name="serviceName"><value>mgmtReportService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IMgmtReportService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="secondContactService"/></property>
+		<property name="serviceName"><value>secondContactService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ISecondContactService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="appointmentService"/></property>
+		<property name="serviceName"><value>appointmentService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IAppointmentService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="appointmentMgmtService"/></property>
+		<property name="serviceName"><value>appointmentMgmtService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IAppointmentMgmtService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="rechargeService"/></property>
+		<property name="serviceName"><value>rechargeService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IRechargeService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="redemptionService"/></property>
+		<property name="serviceName"><value>redemptionService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IRedemptionService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="userSignService"/></property>
+		<property name="serviceName"><value>userSignService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUserSignService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="umpayTransService"/></property>
+		<property name="serviceName"><value>umpayTransService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IUmpayTransService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="needCancelTranService"/></property>
+		<property name="serviceName"><value>needCancelTranService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.INeedCancelTranService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+
+
+
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="channelService"/></property>
+		<property name="serviceName"><value>channelService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IChannelService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="financePlanStatisticsService"/></property>
+		<property name="serviceName"><value>financePlanStatisticsService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IFinancePlanStatisticsService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="dkidCardService"/></property>
+		<property name="serviceName"><value>dkidCardService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.DKidCardService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="noviceCacheService"/></property>
+		<property name="serviceName"><value>noviceCacheService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.INoviceCacheService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="rechargeCancelPayService"/></property>
+		<property name="serviceName"><value>rechargeCancelPayService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IRechargeCancelPayService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="thirdPartyPayService"/></property>
+		<property name="serviceName"><value>thirdPartyPayService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IThirdPartyPayService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="loanExtentionService"/></property>
+		<property name="serviceName"><value>loanExtentionService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.ILoanExtentionService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="vWealthUserService"/></property>
+		<property name="serviceName"><value>vWealthUserService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IVWealthUserService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service"><ref bean="thirdPartyManagerService"/></property>
+		<property name="serviceName"><value>thirdPartyManagerService</value></property>
+		<property name="serviceInterface"><value>com.fuscent.core.service.IThirdPartyManagerService</value></property>
+		<property name="registryPort"><value>9999</value></property>
+	</bean>
+</beans>

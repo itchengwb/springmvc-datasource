@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:serviceInterface="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+
+	<bean id="userService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanInvestorService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanInvestorService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanInvestorService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userInfoService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userInfoService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserInfoService</serviceInterface>
+		
+		
+		
+	</bean>
+
+
+	<bean id="userPicService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userPicService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserPicService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="authenRecordService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/authenRecordService</value></property>
+		<serviceInterface>com.fuscent.core.service.IAuthenRecordService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanPicService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanPicService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanPicService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="ipAddressLocationService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/ipAddressLocationService</value></property>
+		<serviceInterface>com.fuscent.core.service.IIpAddressLocationService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanCommentService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanCommentService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanCommentService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanManageService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanManageService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanManageService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="thirdPartyService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/thirdPartyService</value></property>
+		<serviceInterface>com.fuscent.core.service.IThirdPartyService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="innerMailService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/innerMailService</value></property>
+		<serviceInterface>com.fuscent.core.service.IInnerMailService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userNoticeService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userNoticeService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserNoticeService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="investorService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/investorService</value></property>
+		<serviceInterface>com.fuscent.core.service.IInvestorService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="cashWithdrawService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/cashWithdrawService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICashWithdrawService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="blackListService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/blackListService</value></property>
+		<serviceInterface>com.fuscent.core.service.IBlackListService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="borrowerService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/borrowerService</value></property>
+		<serviceInterface>com.fuscent.core.service.IBorrowerService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="notificationConfigService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/notificationConfigService</value></property>
+		<serviceInterface>com.fuscent.core.service.INotificationConfigService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userSecurityQuestionService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userSecurityQuestionService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserSecurityQuestionService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="creditReportService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/creditReportService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICreditReportService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="creditMaterialService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/creditMaterialService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICreditMaterialService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="expertScoreCardService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/expertScoreCardService</value></property>
+		<serviceInterface>com.fuscent.core.service.IExpertScoreCardService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="creditRightsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/creditRightsService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICreditRightsService</serviceInterface>
+		
+		
+		
+	</bean>
+
+
+	<bean id="loanQuartzService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanQuartzService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanQuartzService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="collectionService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/collectionService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICollectionService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userStatisticService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userStatisticService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserStatisticService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="platformStatisticsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/platformStatisticsService</value></property>
+		<serviceInterface>com.fuscent.core.service.IPlatformStatisticsService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userInvitedService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userInvitedService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserInvitedService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userVipInvestorService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userVipInvestorService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserVipInvestorService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userAutoInvestService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userAutoInvestService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserAutoInvestService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="financialReportService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/financialReportService</value></property>
+		<serviceInterface>com.fuscent.core.service.IFinancialReportService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="couponService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/couponService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICouponService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="financePlanService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/financePlanService</value></property>
+		<serviceInterface>com.fuscent.core.service.IFinancePlanService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="interlinkageService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/interlinkageService</value></property>
+		<serviceInterface>com.fuscent.core.service.IInterlinkageService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="keyValueCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/keyValueCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.IKeyValueCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="loanCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/loanCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.ILoanCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="creditRightCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/creditRightCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICreditRightCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="userCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/userCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.IUserCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="channelCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/channelCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.IChannelCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="investRankingService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/investRankingService</value></property>
+		<serviceInterface>com.fuscent.core.service.IInvestRankingService</serviceInterface>
+		
+		
+		
+	</bean>
+
+
+	<bean id="coreApiService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/coreApiService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICoreApiService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="smsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/smsService</value></property>
+		<serviceInterface>com.fuscent.core.service.ISmsService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="cashflowCheckService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/cashflowCheckService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICashFlowCheckService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="newsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/newsService</value></property>
+		<serviceInterface>com.fuscent.core.service.INewsService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="financePlanCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/financePlanCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.IFinancePlanCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="promotionMgmtService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/promotionMgmtService</value></property>
+		<serviceInterface>com.fuscent.core.service.IPromotionMgmtService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="promotionService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/promotionService</value></property>
+		<serviceInterface>com.fuscent.core.service.IPromotionService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="refundService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/refundService</value></property>
+		<serviceInterface>com.fuscent.core.service.IRefundService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="coreLoanOrgService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/coreLoanOrgService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICoreLoanOrgService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="coreFinanceOrgService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/coreFinanceOrgService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICoreFinanceOrgService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="electronicReceiptService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/electronicReceiptService</value></property>
+		<serviceInterface>com.fuscent.core.service.IElectronicReceiptService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="thirdPartyChannelService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/thirdPartyChannelService</value></property>
+		<serviceInterface>com.fuscent.core.service.IThirdPartyChannelService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="quickPaymentService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/quickPaymentService</value></property>
+		<serviceInterface>com.fuscent.core.service.IQuickPaymentService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="semVisitRecordService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/semVisitRecordService</value></property>
+		<serviceInterface>com.fuscent.core.service.ISemVisitRecordService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="currencyFundService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/currencyFundService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICurrencyFundService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="currencyFundMgmtService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/currencyFundMgmtService</value></property>
+		<serviceInterface>com.fuscent.core.service.ICurrencyFundMgmtService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="financePlanVService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/financePlanVService</value></property>
+		<serviceInterface>com.fuscent.core.service.IFinancePlanVService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="mgmtReportService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/mgmtReportService</value></property>
+		<serviceInterface>com.fuscent.core.service.IMgmtReportService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="secondContactService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/secondContactService</value></property>
+		<serviceInterface>com.fuscent.core.service.ISecondContactService</serviceInterface>
+		
+		
+		
+	</bean>
+
+
+
+	<bean id="appointmentMgmtService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/appointmentMgmtService</value></property>
+		<serviceInterface>com.fuscent.core.service.IAppointmentMgmtService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="rechargeService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/rechargeService</value></property>
+		<serviceInterface>com.fuscent.core.service.IRechargeService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="appointmentService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/appointmentService</value></property>
+		<serviceInterface>com.fuscent.core.service.IAppointmentService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="channelService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/channelService</value></property>
+		<serviceInterface>com.fuscent.core.service.IChannelService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="financePlanStatisticsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/financePlanStatisticsService</value></property>
+		<serviceInterface>com.fuscent.core.service.IFinancePlanStatisticsService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<!-- start of 存储身份验证 -->
+	<bean id="dkidCardService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/dkidCardService</value></property>
+		<serviceInterface>com.fuscent.core.service.DKidCardService</serviceInterface>
+		
+		
+		
+	</bean>
+	<!-- end of 存储身份验证 -->
+	<bean id="noviceCacheService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/noviceCacheService</value></property>
+		<serviceInterface>com.fuscent.core.service.INoviceCacheService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="thirdPartyPayService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/thirdPartyPayService</value></property>
+		<serviceInterface>com.fuscent.core.service.IThirdPartyPayService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="redemptionService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/redemptionService</value></property>
+		<serviceInterface>com.fuscent.core.service.IRedemptionService</serviceInterface>
+		
+		
+		
+	</bean>
+
+	<bean id="partiallyAdvanceReturnRecordService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl"><value>${core.rmi.url}/partiallyAdvanceReturnRecordService</value></property>
+		<serviceInterface>com.fuscent.core.service.IPartiallyAdvanceReturnRecordService</serviceInterface>
+		
+		
+		
+	</bean>
+</beans>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<context:property-placeholder location="classpath:dubbo-provider.properties" ignore-unresolvable="true"/>
+	<dubbo:application name="yoolicore-provider" owner="yantao.yin" organization="YooliCoreCenter"/>    
+    <dubbo:registry address="${registry-address}" protocol="zookeeper"/>
+    <dubbo:protocol name="dubbo" port="${provider-port}"  accesslog="true" />
+		
+ 	<dubbo:service ref="accountCoreService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+ 		interface="com.fuscent.core.service.IAccountCoreService" />
+ 	<dubbo:service ref="workdayService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+ 		interface="com.fuscent.core.service.IWorkdayService" />
+	<dubbo:service ref="workdayService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+ 		interface="com.fuscent.core.service.IWorkdayMgmtService" />
+ 	<dubbo:service ref="vWealthUserService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+ 		interface="com.fuscent.core.service.IVWealthUserService" />
+	<dubbo:service ref="wXJsapiService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+				   interface="com.fuscent.core.service.WXJsapiService" />
+
+	<dubbo:service ref="userService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+				   interface="com.fuscent.core.service.IUserService" />
+
+	<dubbo:service ref="redemptionService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+				   interface="com.fuscent.core.service.IRedemptionService" />
+
+	<dubbo:service ref="thirdPartyService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+				   interface="com.fuscent.core.service.IThirdPartyService" />
+
+	<dubbo:service ref="userVerifyService" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+				   interface="com.fuscent.core.service.IUserVerifyService" />
+
+	<dubbo:service ref="investmentMgmtFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.InvestmentMgmtFacade" />
+	<dubbo:service ref="processMgmtFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.ProcessMgmtFacade" />
+	<dubbo:service ref="publicQueryFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.PublicQueryFacade" />
+	<dubbo:service ref="currentProductParamsFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.CurrentProductParamsFacade" />
+	<dubbo:service ref="currentProductRedisFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.CurrentProductRedisFacade" />
+	<dubbo:service ref="quotaMgmtFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.QuotaMgmtFacade" />
+	<dubbo:service ref="synAccountsFacade" group="${service-group}"
+        version="${service-version}" timeout="${service-timeout}"
+        interface="com.yooli.currentproduct.facade.SynAccountsFacade" />
+	<dubbo:service ref="redeemFacade" group="${service-group}"
+        version="${service-version}" timeout="${service-timeout}"
+        interface="com.yooli.currentproduct.facade.RedeemFacade" />
+    <dubbo:service ref="settleFacade" group="${service-group}"
+        version="${service-version}" timeout="${service-timeout}"
+        interface="com.yooli.currentproduct.facade.SettleFacade" />
+	<dubbo:service ref="positionManagementFacade" group="${service-group}"
+        version="${service-version}" timeout="${service-timeout}"
+        interface="com.yooli.currentproduct.facade.PositionManagementFacade" />
+	<dubbo:service ref="monitorMgmtFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.MonitorMgmtFacade" />
+	<dubbo:service ref="statisticsMgmtFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.currentproduct.facade.StatisticsMgmtFacade" />
+
+    <dubbo:service ref="currentProductCorrectAccountFacade" group="${service-group}"
+                   version="${service-version}" timeout="${service-timeout}"
+                   interface="com.yooli.currentproduct.facade.CurrentProductCorrectAccountFacade" />
+
+
+ 	<dubbo:service ref="mgmtLoanOrgFacade" group="${service-group}" version="${service-version}" timeout="${service-timeout}"
+ 		interface="com.yooli.loanorg.facade.MgmtLoanOrgFacade" />
+ 	
+ 	<dubbo:service ref="billionPromotionFacade" group="${service-group}" version="${service-version}" timeout="1800000"
+ 		interface="com.yooli.promotion.facade.BillionPromotionFacade" retries="0"/>
+
+	<dubbo:service ref="commonPromotionFacade" group="${service-group}" version="${service-version}" timeout="1800000"
+				   interface="com.yooli.commonpromotion.facade.CommonPromotionFacade" retries="0"/>
+ 		
+ 	<dubbo:service ref="notifyFacade" group="${service-group}"
+		version="${service-version}" timeout="${service-timeout}"
+		interface="com.yooli.notify.facade.NotifyFacade" />
+ 	
+ 	<dubbo:service ref="staffFinanceFacade" group="${service-group}"
+        version="${service-version}" timeout="${service-timeout}"
+        interface="com.yooli.staffFinance.facade.StaffFinanceFacade" />
+</beans>

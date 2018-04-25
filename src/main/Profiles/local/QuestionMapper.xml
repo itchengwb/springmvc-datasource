@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.persistence.v3.mapper.QuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.noriental.persistence.v3.domain.Question" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="count_options" property="countOptions" jdbcType="INTEGER" />
+    <result column="difficulty" property="difficulty" jdbcType="INTEGER" />
+    <result column="high_qual" property="highQual" jdbcType="TINYINT" />
+    <result column="mastery" property="mastery" jdbcType="INTEGER" />
+    <result column="multi_score_answer" property="multiScoreAnswer" jdbcType="VARCHAR" />
+    <result column="parent_question_id" property="parentQuestionId" jdbcType="BIGINT" />
+    <result column="question_type" property="questionType" jdbcType="VARCHAR" />
+    <result column="right_option" property="rightOption" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="REAL" />
+    <result column="is_single" property="isSingle" jdbcType="TINYINT" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="qr_id" property="qrId" jdbcType="BIGINT" />
+    <result column="count_topic" property="countTopic" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="src" property="src" jdbcType="INTEGER" />
+    <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP" />
+    <result column="upload_id" property="uploadId" jdbcType="BIGINT" />
+    <result column="upload_src" property="uploadSrc" jdbcType="INTEGER" />
+    <result column="new_format" property="newFormat" jdbcType="TINYINT" />
+    <result column="question_group" property="questionGroup" jdbcType="BIGINT" />
+    <result column="answer_num" property="answerNum" jdbcType="INTEGER" />
+    <result column="question_type_id" property="questionTypeId" jdbcType="INTEGER" />
+    <result column="visible" property="visible" jdbcType="INTEGER" />
+    <result column="org_id" property="orgId" jdbcType="BIGINT" />
+    <result column="org_type" property="orgType" jdbcType="TINYINT" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="is_finished_product" property="isFinishedProduct" jdbcType="INTEGER" />
+    <result column="intelligent" property="intelligent" jdbcType="TINYINT" />
+    <result column="json_data" property="jsonData" jdbcType="OTHER" />
+    <result column="html_data" property="htmlData" jdbcType="OTHER" />
+    <result column="json_map" property="jsonMap" jdbcType="OTHER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, count_options, difficulty, high_qual, mastery, multi_score_answer, parent_question_id, 
+    question_type, right_option, score, is_single, state, qr_id, count_topic, subject_id, 
+    update_time, src, upload_time, upload_id, upload_src, new_format, question_group, 
+    answer_num, question_type_id, visible, org_id, org_type, source, is_finished_product, 
+    intelligent, json_data, html_data, json_map
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.noriental.persistence.v3.domain.QuestionExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from entity_question
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from entity_question
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from entity_question
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.noriental.persistence.v3.domain.QuestionExample" >
+    delete from entity_question
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.noriental.persistence.v3.domain.Question" >
+    insert into entity_question (id, count_options, difficulty, 
+      high_qual, mastery, multi_score_answer, 
+      parent_question_id, question_type, right_option, 
+      score, is_single, state, 
+      qr_id, count_topic, subject_id, 
+      update_time, src, upload_time, 
+      upload_id, upload_src, new_format, 
+      question_group, answer_num, question_type_id, 
+      visible, org_id, org_type, 
+      source, is_finished_product, intelligent, 
+      json_data, html_data, json_map
+      )
+    values (#{id,jdbcType=BIGINT}, #{countOptions,jdbcType=INTEGER}, #{difficulty,jdbcType=INTEGER}, 
+      #{highQual,jdbcType=TINYINT}, #{mastery,jdbcType=INTEGER}, #{multiScoreAnswer,jdbcType=VARCHAR}, 
+      #{parentQuestionId,jdbcType=BIGINT}, #{questionType,jdbcType=VARCHAR}, #{rightOption,jdbcType=VARCHAR}, 
+      #{score,jdbcType=REAL}, #{isSingle,jdbcType=TINYINT}, #{state,jdbcType=VARCHAR}, 
+      #{qrId,jdbcType=BIGINT}, #{countTopic,jdbcType=INTEGER}, #{subjectId,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{src,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{uploadId,jdbcType=BIGINT}, #{uploadSrc,jdbcType=INTEGER}, #{newFormat,jdbcType=TINYINT}, 
+      #{questionGroup,jdbcType=BIGINT}, #{answerNum,jdbcType=INTEGER}, #{questionTypeId,jdbcType=INTEGER}, 
+      #{visible,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT}, #{orgType,jdbcType=TINYINT}, 
+      #{source,jdbcType=VARCHAR}, #{isFinishedProduct,jdbcType=INTEGER}, #{intelligent,jdbcType=TINYINT}, 
+      #{jsonData,jdbcType=OTHER}, #{htmlData,jdbcType=OTHER}, #{jsonMap,jdbcType=OTHER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.noriental.persistence.v3.domain.Question" >
+    insert into entity_question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="countOptions != null" >
+        count_options,
+      </if>
+      <if test="difficulty != null" >
+        difficulty,
+      </if>
+      <if test="highQual != null" >
+        high_qual,
+      </if>
+      <if test="mastery != null" >
+        mastery,
+      </if>
+      <if test="multiScoreAnswer != null" >
+        multi_score_answer,
+      </if>
+      <if test="parentQuestionId != null" >
+        parent_question_id,
+      </if>
+      <if test="questionType != null" >
+        question_type,
+      </if>
+      <if test="rightOption != null" >
+        right_option,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="isSingle != null" >
+        is_single,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="qrId != null" >
+        qr_id,
+      </if>
+      <if test="countTopic != null" >
+        count_topic,
+      </if>
+      <if test="subjectId != null" >
+        subject_id,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="src != null" >
+        src,
+      </if>
+      <if test="uploadTime != null" >
+        upload_time,
+      </if>
+      <if test="uploadId != null" >
+        upload_id,
+      </if>
+      <if test="uploadSrc != null" >
+        upload_src,
+      </if>
+      <if test="newFormat != null" >
+        new_format,
+      </if>
+      <if test="questionGroup != null" >
+        question_group,
+      </if>
+      <if test="answerNum != null" >
+        answer_num,
+      </if>
+      <if test="questionTypeId != null" >
+        question_type_id,
+      </if>
+      <if test="visible != null" >
+        visible,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="orgType != null" >
+        org_type,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="isFinishedProduct != null" >
+        is_finished_product,
+      </if>
+      <if test="intelligent != null" >
+        intelligent,
+      </if>
+      <if test="jsonData != null" >
+        json_data,
+      </if>
+      <if test="htmlData != null" >
+        html_data,
+      </if>
+      <if test="jsonMap != null" >
+        json_map,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="countOptions != null" >
+        #{countOptions,jdbcType=INTEGER},
+      </if>
+      <if test="difficulty != null" >
+        #{difficulty,jdbcType=INTEGER},
+      </if>
+      <if test="highQual != null" >
+        #{highQual,jdbcType=TINYINT},
+      </if>
+      <if test="mastery != null" >
+        #{mastery,jdbcType=INTEGER},
+      </if>
+      <if test="multiScoreAnswer != null" >
+        #{multiScoreAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="parentQuestionId != null" >
+        #{parentQuestionId,jdbcType=BIGINT},
+      </if>
+      <if test="questionType != null" >
+        #{questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="rightOption != null" >
+        #{rightOption,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=REAL},
+      </if>
+      <if test="isSingle != null" >
+        #{isSingle,jdbcType=TINYINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="qrId != null" >
+        #{qrId,jdbcType=BIGINT},
+      </if>
+      <if test="countTopic != null" >
+        #{countTopic,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="src != null" >
+        #{src,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadId != null" >
+        #{uploadId,jdbcType=BIGINT},
+      </if>
+      <if test="uploadSrc != null" >
+        #{uploadSrc,jdbcType=INTEGER},
+      </if>
+      <if test="newFormat != null" >
+        #{newFormat,jdbcType=TINYINT},
+      </if>
+      <if test="questionGroup != null" >
+        #{questionGroup,jdbcType=BIGINT},
+      </if>
+      <if test="answerNum != null" >
+        #{answerNum,jdbcType=INTEGER},
+      </if>
+      <if test="questionTypeId != null" >
+        #{questionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="visible != null" >
+        #{visible,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="orgType != null" >
+        #{orgType,jdbcType=TINYINT},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="isFinishedProduct != null" >
+        #{isFinishedProduct,jdbcType=INTEGER},
+      </if>
+      <if test="intelligent != null" >
+        #{intelligent,jdbcType=TINYINT},
+      </if>
+      <if test="jsonData != null" >
+        #{jsonData,jdbcType=OTHER},
+      </if>
+      <if test="htmlData != null" >
+        #{htmlData,jdbcType=OTHER},
+      </if>
+      <if test="jsonMap != null" >
+        #{jsonMap,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.noriental.persistence.v3.domain.QuestionExample" resultType="java.lang.Integer" >
+    select count(*) from entity_question
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update entity_question
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.countOptions != null" >
+        count_options = #{record.countOptions,jdbcType=INTEGER},
+      </if>
+      <if test="record.difficulty != null" >
+        difficulty = #{record.difficulty,jdbcType=INTEGER},
+      </if>
+      <if test="record.highQual != null" >
+        high_qual = #{record.highQual,jdbcType=TINYINT},
+      </if>
+      <if test="record.mastery != null" >
+        mastery = #{record.mastery,jdbcType=INTEGER},
+      </if>
+      <if test="record.multiScoreAnswer != null" >
+        multi_score_answer = #{record.multiScoreAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentQuestionId != null" >
+        parent_question_id = #{record.parentQuestionId,jdbcType=BIGINT},
+      </if>
+      <if test="record.questionType != null" >
+        question_type = #{record.questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rightOption != null" >
+        right_option = #{record.rightOption,jdbcType=VARCHAR},
+      </if>
+      <if test="record.score != null" >
+        score = #{record.score,jdbcType=REAL},
+      </if>
+      <if test="record.isSingle != null" >
+        is_single = #{record.isSingle,jdbcType=TINYINT},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qrId != null" >
+        qr_id = #{record.qrId,jdbcType=BIGINT},
+      </if>
+      <if test="record.countTopic != null" >
+        count_topic = #{record.countTopic,jdbcType=INTEGER},
+      </if>
+      <if test="record.subjectId != null" >
+        subject_id = #{record.subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.src != null" >
+        src = #{record.src,jdbcType=INTEGER},
+      </if>
+      <if test="record.uploadTime != null" >
+        upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.uploadId != null" >
+        upload_id = #{record.uploadId,jdbcType=BIGINT},
+      </if>
+      <if test="record.uploadSrc != null" >
+        upload_src = #{record.uploadSrc,jdbcType=INTEGER},
+      </if>
+      <if test="record.newFormat != null" >
+        new_format = #{record.newFormat,jdbcType=TINYINT},
+      </if>
+      <if test="record.questionGroup != null" >
+        question_group = #{record.questionGroup,jdbcType=BIGINT},
+      </if>
+      <if test="record.answerNum != null" >
+        answer_num = #{record.answerNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.questionTypeId != null" >
+        question_type_id = #{record.questionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.visible != null" >
+        visible = #{record.visible,jdbcType=INTEGER},
+      </if>
+      <if test="record.orgId != null" >
+        org_id = #{record.orgId,jdbcType=BIGINT},
+      </if>
+      <if test="record.orgType != null" >
+        org_type = #{record.orgType,jdbcType=TINYINT},
+      </if>
+      <if test="record.source != null" >
+        source = #{record.source,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isFinishedProduct != null" >
+        is_finished_product = #{record.isFinishedProduct,jdbcType=INTEGER},
+      </if>
+      <if test="record.intelligent != null" >
+        intelligent = #{record.intelligent,jdbcType=TINYINT},
+      </if>
+      <if test="record.jsonData != null" >
+        json_data = #{record.jsonData,jdbcType=OTHER},
+      </if>
+      <if test="record.htmlData != null" >
+        html_data = #{record.htmlData,jdbcType=OTHER},
+      </if>
+      <if test="record.jsonMap != null" >
+        json_map = #{record.jsonMap,jdbcType=OTHER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update entity_question
+    set id = #{record.id,jdbcType=BIGINT},
+      count_options = #{record.countOptions,jdbcType=INTEGER},
+      difficulty = #{record.difficulty,jdbcType=INTEGER},
+      high_qual = #{record.highQual,jdbcType=TINYINT},
+      mastery = #{record.mastery,jdbcType=INTEGER},
+      multi_score_answer = #{record.multiScoreAnswer,jdbcType=VARCHAR},
+      parent_question_id = #{record.parentQuestionId,jdbcType=BIGINT},
+      question_type = #{record.questionType,jdbcType=VARCHAR},
+      right_option = #{record.rightOption,jdbcType=VARCHAR},
+      score = #{record.score,jdbcType=REAL},
+      is_single = #{record.isSingle,jdbcType=TINYINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      qr_id = #{record.qrId,jdbcType=BIGINT},
+      count_topic = #{record.countTopic,jdbcType=INTEGER},
+      subject_id = #{record.subjectId,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      src = #{record.src,jdbcType=INTEGER},
+      upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
+      upload_id = #{record.uploadId,jdbcType=BIGINT},
+      upload_src = #{record.uploadSrc,jdbcType=INTEGER},
+      new_format = #{record.newFormat,jdbcType=TINYINT},
+      question_group = #{record.questionGroup,jdbcType=BIGINT},
+      answer_num = #{record.answerNum,jdbcType=INTEGER},
+      question_type_id = #{record.questionTypeId,jdbcType=INTEGER},
+      visible = #{record.visible,jdbcType=INTEGER},
+      org_id = #{record.orgId,jdbcType=BIGINT},
+      org_type = #{record.orgType,jdbcType=TINYINT},
+      source = #{record.source,jdbcType=VARCHAR},
+      is_finished_product = #{record.isFinishedProduct,jdbcType=INTEGER},
+      intelligent = #{record.intelligent,jdbcType=TINYINT},
+      json_data = #{record.jsonData,jdbcType=OTHER},
+      html_data = #{record.htmlData,jdbcType=OTHER},
+      json_map = #{record.jsonMap,jdbcType=OTHER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.noriental.persistence.v3.domain.Question" >
+    update entity_question
+    <set >
+      <if test="countOptions != null" >
+        count_options = #{countOptions,jdbcType=INTEGER},
+      </if>
+      <if test="difficulty != null" >
+        difficulty = #{difficulty,jdbcType=INTEGER},
+      </if>
+      <if test="highQual != null" >
+        high_qual = #{highQual,jdbcType=TINYINT},
+      </if>
+      <if test="mastery != null" >
+        mastery = #{mastery,jdbcType=INTEGER},
+      </if>
+      <if test="multiScoreAnswer != null" >
+        multi_score_answer = #{multiScoreAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="parentQuestionId != null" >
+        parent_question_id = #{parentQuestionId,jdbcType=BIGINT},
+      </if>
+      <if test="questionType != null" >
+        question_type = #{questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="rightOption != null" >
+        right_option = #{rightOption,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=REAL},
+      </if>
+      <if test="isSingle != null" >
+        is_single = #{isSingle,jdbcType=TINYINT},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="qrId != null" >
+        qr_id = #{qrId,jdbcType=BIGINT},
+      </if>
+      <if test="countTopic != null" >
+        count_topic = #{countTopic,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        subject_id = #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="src != null" >
+        src = #{src,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadId != null" >
+        upload_id = #{uploadId,jdbcType=BIGINT},
+      </if>
+      <if test="uploadSrc != null" >
+        upload_src = #{uploadSrc,jdbcType=INTEGER},
+      </if>
+      <if test="newFormat != null" >
+        new_format = #{newFormat,jdbcType=TINYINT},
+      </if>
+      <if test="questionGroup != null" >
+        question_group = #{questionGroup,jdbcType=BIGINT},
+      </if>
+      <if test="answerNum != null" >
+        answer_num = #{answerNum,jdbcType=INTEGER},
+      </if>
+      <if test="questionTypeId != null" >
+        question_type_id = #{questionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="visible != null" >
+        visible = #{visible,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="orgType != null" >
+        org_type = #{orgType,jdbcType=TINYINT},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="isFinishedProduct != null" >
+        is_finished_product = #{isFinishedProduct,jdbcType=INTEGER},
+      </if>
+      <if test="intelligent != null" >
+        intelligent = #{intelligent,jdbcType=TINYINT},
+      </if>
+      <if test="jsonData != null" >
+        json_data = #{jsonData,jdbcType=OTHER},
+      </if>
+      <if test="htmlData != null" >
+        html_data = #{htmlData,jdbcType=OTHER},
+      </if>
+      <if test="jsonMap != null" >
+        json_map = #{jsonMap,jdbcType=OTHER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.noriental.persistence.v3.domain.Question" >
+    update entity_question
+    set count_options = #{countOptions,jdbcType=INTEGER},
+      difficulty = #{difficulty,jdbcType=INTEGER},
+      high_qual = #{highQual,jdbcType=TINYINT},
+      mastery = #{mastery,jdbcType=INTEGER},
+      multi_score_answer = #{multiScoreAnswer,jdbcType=VARCHAR},
+      parent_question_id = #{parentQuestionId,jdbcType=BIGINT},
+      question_type = #{questionType,jdbcType=VARCHAR},
+      right_option = #{rightOption,jdbcType=VARCHAR},
+      score = #{score,jdbcType=REAL},
+      is_single = #{isSingle,jdbcType=TINYINT},
+      state = #{state,jdbcType=VARCHAR},
+      qr_id = #{qrId,jdbcType=BIGINT},
+      count_topic = #{countTopic,jdbcType=INTEGER},
+      subject_id = #{subjectId,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      src = #{src,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      upload_id = #{uploadId,jdbcType=BIGINT},
+      upload_src = #{uploadSrc,jdbcType=INTEGER},
+      new_format = #{newFormat,jdbcType=TINYINT},
+      question_group = #{questionGroup,jdbcType=BIGINT},
+      answer_num = #{answerNum,jdbcType=INTEGER},
+      question_type_id = #{questionTypeId,jdbcType=INTEGER},
+      visible = #{visible,jdbcType=INTEGER},
+      org_id = #{orgId,jdbcType=BIGINT},
+      org_type = #{orgType,jdbcType=TINYINT},
+      source = #{source,jdbcType=VARCHAR},
+      is_finished_product = #{isFinishedProduct,jdbcType=INTEGER},
+      intelligent = #{intelligent,jdbcType=TINYINT},
+      json_data = #{jsonData,jdbcType=OTHER},
+      html_data = #{htmlData,jdbcType=OTHER},
+      json_map = #{jsonMap,jdbcType=OTHER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

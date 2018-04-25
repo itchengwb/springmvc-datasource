@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.noriental.persistence.v3.mapper.dao.IndexBoundaryDao">
+    <!-- select part -->
+    <sql id="quizSelectPart">
+            select
+                (select bb.org_id from neworiental_user.entity_user bb where bb.system_id=a.upload_id) org_id,
+                (select group_concat('series_id:',aa.series_id, '`~`','series_name:', bb.`name` separator '`|`')
+                   from link_question_series aa, entity_seriess bb where aa.question_id = a.id and aa.series_id = bb.id) __series,
+                (select group_concat('topic_id:',aa.topic_id, '`~`','topic_mastery:',ifnull(aa.mastery,0), '`~`','topic_name:',bb.`name` separator '`|`' )
+                   from link_question_topic aa, entity_topic bb where aa.question_id = a.id and aa.topic_id = bb.id) __topic,
+                (select group_concat('chapter_id:',aa.chapter_id separator '`|`') from link_question_chapter aa where aa.question_id = a.id) __chapter,
+                (select group_concat('chapter_id1:',aa.chapter_id separator '`|`') from link_question_chapter aa /*一级章节*/
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=1
+                  where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=1) __chapter1,
+                (select group_concat('chapter_id2:',aa.chapter_id,'`~`','chapter_id1:',bb.parent_id separator '`|`') from link_question_chapter aa
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=2  /*二级章节并关联出父一级章节*/
+                  where aa.question_id = a.id) __chapter2,
+                (select group_concat('chapter_id3:',aa.chapter_id,'`~`','chapter_id2:',bb.parent_id,'`~`','chapter_id1:',cc.parent_id separator '`|`')
+                   from link_question_chapter aa
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=3  /*三级章节并关联出父二级章节及祖父一级章节*/
+                   left join entity_teaching_chapter cc on cc.id=bb.parent_id
+                  where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=3) __chapter3,
+                (select group_concat('custom_list_id:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa where aa.question_id = a.id) __directory,
+                (select group_concat('custom_list_id1:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa /*一级目录*/
+                   left join entity_custom_list bb on bb.id= aa.custom_list_id and bb.`level`=1
+                  where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=1) __directory1,
+                (select group_concat('custom_list_id2:',aa.custom_list_id,'`~`','custom_list_id1:',bb.parent_id separator '`|`') from link_custom_question_resource aa
+                   left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=2  /*二级目录并关联出父一级目录*/
+                  where aa.question_id = a.id) __directory2,
+                (select group_concat('custom_list_id3:',aa.custom_list_id,'`~`','custom_list_id2:',bb.parent_id,'`~`','custom_list_id1:',cc.parent_id separator '`|`')
+                   from link_custom_question_resource aa
+                   left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=3  /*三级目录并关联出父二级目录及祖父一级目录*/
+                   left join entity_custom_list cc on cc.id=bb.parent_id
+                  where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=3) __directory3,
+                (select concat('fav:',aa.fav_count,'`~`','ref:',aa.ref_count,'`~`','dnd:',aa.download_count)
+                   from counter_res aa where aa.`object_id`=a.id and aa.object_type=8) _res_counter,
+               (case when b.question_id is not null then (case when b.same_num is null then (0-a.id) else (b.same_num-9223372036854775807) end)
+                     when c.question_id is not null then (c.same_num) else (0-a.id) end) same_num,
+               (case when b.question_id is not null then b.same_score
+                     when c.question_id is not null then c.same_score else null end) same_score,
+               (case when b.question_id is not null then b.create_time
+                     when c.question_id is not null then c.create_time else null end) create_time,d.`name` question_group_name,a.*
+    </sql>
+    <sql id="coursewareSelectPart">
+            select
+                e.id chapter_id3,concat(e.`prefix_name`,' ',e.`name`) chapter_name3,e.directory_id,
+                f.id chapter_id2,concat(f.`prefix_name`,' ',f.`name`) chapter_name2,
+                g.id chapter_id1,concat(g.`prefix_name`,' ',g.`name`) chapter_name1,
+                i.`system_id` school_check_id,i.`name` school_check_name,i.`create_time` school_check_time,
+                j.`system_id` platform_check_id,j.`name` platform_check_name,j.`create_time` platform_check_time,
+                k.`system_id` province_check_id,k.`name` province_check_name,k.`create_time` province_check_time,
+                (select aa.`name` from entity_teaching_chapter aa where aa.id = a.chapter_id) chapter_name,
+                (select group_concat('topic_id:',aa.topic_id, '`~`','topic_name:',bb.`name` separator '`|`' )
+                   from link_resource_topic aa, entity_topic bb where aa.resource_id = a.id and aa.resource_type = 0 and aa.topic_id = bb.id) __topic,
+                (select concat('stage_id:',aa.id,'`~`','stage_name:',aa.`name`) from entity_stage aa where aa.id = a.stage_id) _stage,
+                (select concat('subject_id:',aa.id,'`~`','subject_name:',aa.`name`) from entity_subject aa where aa.id =a.subject_id) _subject,
+                (select concat('fav:',aa.fav_count,'`~`','ref:',aa.ref_count,'`~`','like:',aa.like_count,'`~`','dnd:',aa.download_count,'`~`','view:',aa.view_count)
+                   from counter_res aa where aa.`object_id`=a.id and aa.object_type=0) _res_counter,
+                2 `type`,a.*
+            from
+                (select (select case when aa.org_type = 4 then (select name from entity_private_school where aa.org_id = id)
+                                     when aa.org_type = 2 then (select name from entity_public_school where aa.org_id = id)
+                                     else '' end org_name) org_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.area_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.area_code = d.region_code)
+                                     else '' end area_name) area_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.city_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.city_code = d.region_code)
+                                     else '' end city_name) city_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.province_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.province_code = d.region_code)
+                                     else '' end province_name) province_name, aa.*
+    </sql>
+    <sql id="clipSelectPart">
+            select
+                e.id chapter_id3,concat(e.`prefix_name`,' ',e.`name`) chapter_name3,e.directory_id,
+                f.id chapter_id2,concat(f.`prefix_name`,' ',f.`name`) chapter_name2,
+                g.id chapter_id1,concat(g.`prefix_name`,' ',g.`name`) chapter_name1,
+                i.`system_id` school_check_id,i.`name` school_check_name,i.`create_time` school_check_time,
+                j.`system_id` platform_check_id,j.`name` platform_check_name,j.`create_time` platform_check_time,
+                k.`system_id` province_check_id,k.`name` province_check_name,k.`create_time` province_check_time,
+                (select aa.`name` from entity_teaching_chapter aa where aa.id = a.chapter_id) chapter_name,
+                (select group_concat('topic_id:',aa.topic_id, '`~`','topic_name:',bb.`name` separator '`|`' )
+                   from link_resource_topic aa, entity_topic bb where aa.resource_id = a.id and aa.resource_type = 1 and aa.topic_id = bb.id) __topic,
+                (select concat('stage_id:',aa.id,'`~`','stage_name:',aa.`name`) from entity_stage aa where aa.id = a.stage_id) _stage,
+                (select concat('subject_id:',aa.id,'`~`','subject_name:',aa.`name`) from entity_subject aa where aa.id =a.subject_id) _subject,
+                (select concat('fav:',aa.fav_count,'`~`','ref:',aa.ref_count,'`~`','like:',aa.like_count,'`~`','dnd:',aa.download_count,'`~`','view:',aa.view_count)
+                   from counter_res aa where aa.`object_id`=a.id and aa.object_type=1) _res_counter,
+                1 `type`,a.*
+            from
+                (select (select case when aa.org_type = 4 then (select name from entity_private_school where aa.org_id = id)
+                                     when aa.org_type = 2 then (select name from entity_public_school where aa.org_id = id)
+                                     else '' end org_name) org_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.area_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.area_code = d.region_code)
+                                     else '' end area_name) area_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.city_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.city_code = d.region_code)
+                                     else '' end city_name) city_name,
+                        (select case when aa.org_type = 4 then (select name from entity_private_director d where aa.province_code = d.code )
+                                     when aa.org_type = 2 then (select name from entity_public_director d where aa.province_code = d.region_code)
+                                     else '' end province_name) province_name, aa.*
+    </sql>
+    <sql id="studentSelectPart">
+                /* -- student */
+                select aa.id user_id,aa.system_id,aa.stage_id,aa.last_login_time,aa.credit,aa.grade_id,aa.school_number,aa.class_status,aa.father_system_id,aa.mother_system_id,
+                    aa.other_system_id,aa.student_space_status,aa.student_app_status,aa.student_pad_status,null share_school,null share_area,null share_level,null share_city,
+                    null share_province,null top_level,null teacher_title,null teacher_space_status,null teacher_app_status,null teaching_directory_id,null subject_id,null relative,null student_system_id,
+                    null pad_teacher,bb.open_register,bb.check_status,bb.id,bb.tel,bb.id_card,bb.uname,bb.nickname,bb.verify_tel,bb.email,bb.active_status,bb.`name`,'' `password`,bb.`status`,bb.create_time,bb.head_image,bb.gender,bb.birthday,
+                    bb.type,bb.belonging,bb.org_id,bb.org_type,bb.area_org_id,bb.area_org_type,bb.city_org_id,bb.city_org_type,bb.province_org_id,bb.province_org_type,bb.`comment`,
+                    bb.pinyin_name,bb.pinyin_name_first_char,bb.creator_id,cc.share_winner,cc.pad_user,cc.user_register_type,bb.region_code,
+                    (select group_concat(aaa.class_id) from neworiental_user.l_class_student aaa where aaa.student_system_id = aa.system_id and aaa.checked_status=2 group by aaa.student_system_id) klass_ids
+    </sql>
+    <sql id="teacherSelectPart">
+                /* -- teacher */
+                select aa.id user_id,aa.system_id,aa.stage_id,aa.last_login_time,aa.credit,null grade_id,null school_number,null class_status,null father_system_id,null mother_system_id,
+                    null other_system_id,null student_space_status,null student_app_status,null student_pad_status,aa.share_school,aa.share_area,aa.share_level,aa.share_city,aa.share_province,
+                    aa.top_level,aa.teacher_title,aa.teacher_space_status,aa.teacher_app_status,aa.teaching_directory_id,aa.subject_id,null relative,null student_system_id,
+                    aa.pad_teacher,aa.teaching_version_id,bb.open_register,bb.check_status,bb.id,bb.tel,bb.id_card,
+                    bb.uname,bb.nickname,bb.verify_tel,bb.email,bb.active_status,bb.`name`,'' `password`,bb.`status`,bb.create_time,bb.head_image,bb.gender,bb.birthday,bb.type,bb.belonging,bb.org_id,
+                    bb.org_type,bb.area_org_id,bb.area_org_type,bb.city_org_id,bb.city_org_type,bb.province_org_id,bb.province_org_type,bb.`comment`,
+                    bb.pinyin_name,bb.pinyin_name_first_char,bb.creator_id,cc.share_winner,cc.pad_user,cc.user_register_type,bb.region_code,
+                    (select group_concat(aaa.class_id) from neworiental_user.l_class_teacher aaa where aaa.teacher_system_id = aa.system_id group by aaa.teacher_system_id) klass_ids
+    </sql>
+    <sql id="parentSelectPart">
+                /* -- parent */
+                select aa.id user_id,aa.system_id,aa.stage_id,aa.last_login_time,aa.credit,aa.grade_id,null school_number,null class_status,null father_system_id,null mother_system_id,
+                    null other_system_id,null student_space_status,null student_app_status,null student_pad_status,null share_school,null share_area,null share_level,null share_city,null share_province,
+                    null top_level,null teacher_title,null teacher_space_status,null teacher_app_status,null teaching_directory_id,null subject_id,aa.relative,aa.student_system_id,
+                    null pad_teacher,bb.open_register,bb.check_status,bb.id,bb.tel,bb.id_card,
+                    bb.uname,bb.nickname,bb.verify_tel,bb.email,bb.active_status,bb.`name`,'' `password`,bb.`status`,bb.create_time,bb.head_image,bb.gender,bb.birthday,bb.type,bb.belonging,bb.org_id,bb.org_type,
+                    bb.area_org_id,bb.area_org_type,bb.city_org_id,bb.city_org_type,bb.province_org_id,bb.province_org_type,bb.`comment`,
+                    bb.pinyin_name,bb.pinyin_name_first_char,bb.creator_id,cc.share_winner,cc.pad_user,cc.user_register_type,bb.region_code,
+                    (select group_concat(aaa.class_id) from neworiental_user.l_class_student aaa where aaa.student_system_id = aa.student_system_id and aaa.checked_status=2 group by aaa.student_system_id) klass_ids
+    </sql>
+    <sql id="exerciseSelectPart">
+            select
+                a.id,
+                a.is_used,
+                a.resource_name,
+                a.intro,
+                a.chapter_id,
+                a.subject_id,
+                a.category,
+                a.created_by,
+                a.submit_time,
+                a.update_time,
+                a.question_count,
+                a.sub_question_count,
+                a.all_single,
+                a.share_to,
+                a.share_time,
+                a.user_name,
+                a.org_id,
+                a.area_id,
+                a.is_delete,
+                a.`status`,
+                a.high_qual,
+                d.stage_id,
+                a.origin,
+                a.parent_id,
+                a.school_check_status,
+                a.platform_check_status,
+                a.province_check_status,
+                a.city_check_status,
+                a.area_check_status,
+                a.org_type,
+                a.area_code,
+                a.city_code,
+                a.province_code,
+                a.question_seq,
+                a.contain_subjective,
+                h.fav_count fav,
+                h.ref_count ref,
+                h.download_count dnd,
+                c.type_id,
+                c.prov,
+                c.city,
+                c.county,
+                c.region,
+                c.`year` paper_year,
+                c.term,
+                c.grade_id,
+                c.`state`,
+                c.`path`,
+                c.md5,
+                c.src,
+                d.`name` type_name,  /* entity_exercise_type.name = entity_exercise_paper.type_name */
+                d.fullname,
+                d.seq,
+                d.`enable`,
+                d.group_seq,
+                d.group_name,
+                e.id chapter_id3,concat(e.`prefix_name`,' ',e.`name`) chapter_name3,e.directory_id,
+                f.id chapter_id2,concat(f.`prefix_name`,' ',f.`name`) chapter_name2,
+                g.id chapter_id1,concat(g.`prefix_name`,' ',g.`name`) chapter_name1,
+                i.`system_id` school_check_id,i.`name` school_check_name,i.`create_time` school_check_time,
+                j.`system_id` platform_check_id,j.`name` platform_check_name,j.`create_time` platform_check_time,
+                k.`system_id` province_check_id,k.`name` province_check_name,k.`create_time` province_check_time,
+                (
+                select group_concat( 'question_id:', aa.question_id  order by aa.sequence asc separator '`|`' )
+                    from link_exercise_question aa
+                    where aa.exercise_id = a.id
+                ) __question,
+                (
+                select group_concat('topic_id:',aa.topic_id, '`~`','topic_name:',bb.`name` order by aa.id asc separator '`|`' )
+                    from link_exercise_topic aa,entity_topic bb
+                    where aa.exercise_id = a.id and aa.topic_id=bb.id
+                ) __topic
+    </sql>
+    <sql id="respackageSelectPart">
+        select
+            (select group_concat('topic_ids:',aa.topic_id,'`~`',
+                               'topic_names:',bb.`name`,'`~`',
+                               'unit_ids:',aa.unit_id,'`~`',
+                               'module_ids:',aa.module_id separator '`|`')
+               from link_respackage_topic aa, entity_topic bb where aa.package_id=a.id and aa.topic_id=bb.id) __topics,
+            a.*,b.version_name
+    </sql>
+    <sql id="school2SelectPart">
+            select 2 org_type, null director_id, a.*
+    </sql>
+    <sql id="school4SelectPart">
+            select 4 org_type, null `level`, a.*
+    </sql>
+    <sql id="hostSelectPart">
+            select a.*
+    </sql>
+    <sql id="subjectSelectPart">
+            select a.*
+    </sql>
+    <sql id="lkResourceSelectPart">
+            select a.*,
+                 (
+                case
+                     when b.id is not null then CONCAT('directory_id:',IFNULL(bt.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(bt.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(bt2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(bt3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(bt.prefix_name,''),IF(bt.prefix_name,'',' '),IFNULL(bt.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(bt2.prefix_name,''),IF(bt2.prefix_name,'',' '),IFNULL(bt2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(bt3.prefix_name,''),IF(bt3.prefix_name,'',' '),IFNULL(bt3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(bt.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(bt.`name`,''),'`~`','subject_id:',IFNULL(b.subject_id,0),'`~`','md5:',IFNULL(b.md5,''),'`~`',
+                                                       'resource_format:',IFNULL(b.resource_format,''))
+                     when c.id is not null then CONCAT('directory_id:',IFNULL(ct.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(ct.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(ct2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(ct3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(ct.prefix_name,''),IF(ct.prefix_name,'',' '),IFNULL(ct.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(ct2.prefix_name,''),IF(ct2.prefix_name,'',' '),IFNULL(ct2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(ct3.prefix_name,''),IF(ct3.prefix_name,'',' '),IFNULL(ct3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(ct.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(ct.`name`,''),'`~`','subject_id:',IFNULL(c.subject_id,0))
+                     when d.id is not null then CONCAT('directory_id:',IFNULL(dt.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(dt.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(dt2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(dt3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(dt.prefix_name,''),IF(dt.prefix_name,'',' '),IFNULL(dt.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(dt2.prefix_name,''),IF(dt2.prefix_name,'',' '),IFNULL(dt2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(dt3.prefix_name,''),IF(dt3.prefix_name,'',' '),IFNULL(dt3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(dt.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(dt.`name`,''),'`~`','subject_id:',IFNULL(d.subject_id,0),'`~`','md5:',IFNULL(d.md5,''),'`~`',
+                                                       'resource_format:',IFNULL(d.resource_format,''))
+                     when e.id is not null then CONCAT('directory_id:',IFNULL(et.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(et.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(et2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(et3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(et.prefix_name,''),IF(et.prefix_name,'',' '),IFNULL(et.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(et2.prefix_name,''),IF(et2.prefix_name,'',' '),IFNULL(et2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(et3.prefix_name,''),IF(et3.prefix_name,'',' '),IFNULL(et3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(et.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(et.`name`,''),'`~`','subject_id:',IFNULL(e.subject_id,0))
+                else null end) _chapter,
+               (case
+                     when b.id is not null then (SELECT GROUP_CONCAT('topic_ids:',bb.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_resource_topic bb
+                                                   left join entity_topic t1 on t1.id = bb.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where bb.resource_id=b.id and bb.resource_type=0)
+                     when c.id is not null then (SELECT GROUP_CONCAT('topic_ids:',cc.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_exercise_topic cc
+                                                   left join entity_topic t1 on t1.id = cc.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where cc.exercise_id=c.id)
+                     when d.id is not null then (SELECT GROUP_CONCAT('topic_ids:',dd.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_resource_topic dd
+                                                   left join entity_topic t1 on t1.id = dd.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where dd.resource_id=d.id and dd.resource_type=1)
+                     when e.id is not null then (SELECT GROUP_CONCAT('topic_ids:',dd.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_resource_topic dd
+                                                   left join entity_topic t1 on t1.id = dd.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where dd.resource_id=d.id and dd.resource_type=30)
+                     else null end) __topic
+
+
+    </sql>
+
+    <sql id="myResourceSelectPart">
+            select a.*,
+                 (
+                case
+                     when b.id is not null then CONCAT('resource_name:',IFNULL(b.resource_name,''),'`~`',
+                                                       'directory_id:',IFNULL(bt.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(bt.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(bt2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(bt3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(bt.prefix_name,''),IF(bt.prefix_name,'',' '),IFNULL(bt.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(bt2.prefix_name,''),IF(bt2.prefix_name,'',' '),IFNULL(bt2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(bt3.prefix_name,''),IF(bt3.prefix_name,'',' '),IFNULL(bt3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(bt.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(bt.`name`,''),'`~`','subject_id:',IFNULL(b.subject_id,0),'`~`','md5:',IFNULL(b.md5,''),'`~`',
+                                                       'resource_tag:',IFNULL(b.resource_tag,0),'`~`','resource_format:',IFNULL(b.resource_format,''))
+                     when c.id is not null then CONCAT('resource_name:',IFNULL(c.resource_name,''),'`~`',
+                                                       'directory_id:',IFNULL(ct.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(ct.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(ct2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(ct3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(ct.prefix_name,''),IF(ct.prefix_name,'',' '),IFNULL(ct.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(ct2.prefix_name,''),IF(ct2.prefix_name,'',' '),IFNULL(ct2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(ct3.prefix_name,''),IF(ct3.prefix_name,'',' '),IFNULL(ct3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(ct.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(ct.`name`,''),'`~`','subject_id:',IFNULL(c.subject_id,0))
+                     when d.id is not null then CONCAT('resource_name:',IFNULL(d.resource_name,''),'`~`',
+                                                       'directory_id:',IFNULL(dt.directory_id,0),'`~`',
+                                                       'chapter_id3:',IFNULL(dt.id,0),'`~`',
+                                                       'chapter_id2:',IFNULL(dt2.id,0),'`~`',
+                                                       'chapter_id1:',IFNULL(dt3.id,0),'`~`',
+                                                       'chapter_name3:',IFNULL(dt.prefix_name,''),IF(dt.prefix_name,'',' '),IFNULL(dt.`name`,''),'`~`',
+                                                       'chapter_name2:',IFNULL(dt2.prefix_name,''),IF(dt2.prefix_name,'',' '),IFNULL(dt2.`name`,''),'`~`',
+                                                       'chapter_name1:',IFNULL(dt3.prefix_name,''),IF(dt3.prefix_name,'',' '),IFNULL(dt3.`name`,''),'`~`',
+                                                       'chapter_id:',IFNULL(dt.id,0),'`~`',
+                                                       'chapter_name:',IFNULL(dt.`name`,''),'`~`','subject_id:',IFNULL(d.subject_id,0),'`~`','md5:',IFNULL(d.md5,''),'`~`',
+                                                       'resource_tag:',IFNULL(d.resource_tag,0),'`~`','resource_format:',IFNULL(d.resource_format,''))
+                else null end) _chapter,
+               (case
+                     when b.id is not null then (SELECT GROUP_CONCAT('topic_ids:',bb.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_resource_topic bb
+                                                   left join entity_topic t1 on t1.id = bb.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where bb.resource_id=b.id and bb.resource_type=0)
+                     when c.id is not null then (SELECT GROUP_CONCAT('topic_ids:',cc.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_exercise_topic cc
+                                                   left join entity_topic t1 on t1.id = cc.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where cc.exercise_id=c.id)
+                     when d.id is not null then (SELECT GROUP_CONCAT('topic_ids:',dd.topic_id,'`~`','unit_ids:',t2.id,'`~`','module_ids:',t3.id separator '`|`' )
+                                                   from link_resource_topic dd
+                                                   left join entity_topic t1 on t1.id = dd.topic_id
+                                                   left join entity_unit t2 on t2.id = t1.unit_id
+                                                   left join entity_module t3 on t3.id = t2.module_id
+                                                  where dd.resource_id=d.id and dd.resource_type=1)
+                     else null end) __topic
+
+
+    </sql>
+    <sql id="lqResourceSelectPart">
+            SELECT
+                (
+                    CASE
+                    WHEN c3.`level` = 3 THEN
+                        CONCAT(
+                            'custom_list_id3:',
+                            c3.id,
+                            '`~`',
+                            'custom_list_name3:',
+                            IFNULL(c3.`name`, ''),
+                            '`~`',
+                            'custom_list_id2:',
+                            c2.id,
+                            '`~`',
+                            'custom_list_name2:',
+                            IFNULL(c2.`name`, ''),
+                            '`~`',
+                            'custom_list_id1:',
+                            c1.id,
+                            '`~`',
+                            'custom_list_name1:',
+                            IFNULL(c1.`name`, '')
+                        )
+                    WHEN c3.`level` = 2 THEN
+                        CONCAT(
+                            'custom_list_id2:',
+                            c3.id,
+                            '`~`',
+                            'custom_list_name2:',
+                            IFNULL(c3.`name`, ''),
+                            '`~`',
+                            'custom_list_id1:',
+                            c2.id,
+                            '`~`',
+                            'custom_list_name1:',
+                            IFNULL(c2.`name`, '')
+                        )
+                    WHEN c3.`level` = 1 THEN
+                        CONCAT(
+                            'custom_list_id1:',
+                            c3.id,
+                            '`~`',
+                            'custom_list_name1:',
+                            IFNULL(c3.`name`, '')
+                        )
+                    ELSE
+                        NULL
+                    END
+                ) AS _custom_list,
+                b.difficulty,
+                b.question_type,
+                b.question_type_id,
+                b.is_single,
+                b.state,
+                b.upload_id,
+                b.parent_question_id,
+                b.answer_num,
+                b.visible,
+                b.subject_id,
+                b.new_format,
+                a.id,
+                a.system_id,
+                a.group_id,
+                a.custom_list_id,
+                a.is_fav,
+                a.question_id,
+                a.resource_status,
+                a.create_time,
+                a.update_time
+    </sql>
+    <!-- by boundary-->
+    <select id="find" resultType="hashmap">
+        <if test="core=='quiz'">
+            <include refid="quizSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_question where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_question where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_question where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                  order by id ${sort}) t
+            </if>
+            left join entity_question a on a.id=t.id
+            left join (select bb.* from (select aaa.same_num,max(aaa.same_score) same_score from entity_question_same aaa group by aaa.same_num ) aa
+            left join entity_question_same bb on bb.same_num=aa.same_num and bb.same_score=aa.same_score ) b on b.question_id=a.id
+            left join entity_question_same c on c.question_id=a.id and b.question_id is null
+            left join entity_group d on d.id=a.question_group
+        </if>
+
+        <if test="core=='courseware'">
+            <include refid="coursewareSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_res_courseware where id &gt; ${boundary} order by id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_res_courseware where id &lt; ${boundary} order by id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_res_courseware where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) tt
+            </if>
+            left join entity_res_courseware aa on aa.id=tt.id) a
+            left join entity_teaching_chapter e on e.id = a.chapter_id
+            left join entity_teaching_chapter f on f.id = e.parent_id
+            left join entity_teaching_chapter g on g.id = f.parent_id
+            left join (
+                select iii.* from entity_resource_operate_record iii,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) ii
+                where iii.id=ii.id and iii.op_level = 2 and iii.resource_type=1)i on i.resource_id=a.id
+            left join (
+                select jjj.* from entity_resource_operate_record jjj,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) jj
+                where jjj.id=jj.id and jjj.op_level = 4 and jjj.resource_type=1)j on j.resource_id=a.id
+            left join (
+                select kkk.* from entity_resource_operate_record kkk,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) kk
+                where kkk.id=kk.id and kkk.op_level = 3 and kkk.resource_type=1)k on k.resource_id=a.id
+        </if>
+        <if test="core=='clip'">
+                <include refid="clipSelectPart"/>
+                <if test="list==null and sort == 'asc'">
+                from (select id from entity_res_clip where id &gt; ${boundary} order by id asc limit ${rows}) tt
+                </if>
+                <if test="list==null and sort == 'desc'">
+                from (select id from entity_res_clip where id &lt; ${boundary} order by id desc limit ${rows}) tt
+                </if>
+                <if test="list!=null and list.size()>0">
+                from (select id from entity_res_clip where id in
+                    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                    order by id ${sort}) tt
+                </if>
+                left join entity_res_clip aa on aa.id=tt.id) a
+            left join entity_teaching_chapter e on e.id = a.chapter_id
+            left join entity_teaching_chapter f on f.id = e.parent_id
+            left join entity_teaching_chapter g on g.id = f.parent_id
+            left join (
+                select iii.* from entity_resource_operate_record iii,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) ii
+                where iii.id=ii.id and iii.op_level = 2 and iii.resource_type=3)i on i.resource_id=a.id
+            left join (
+                select jjj.* from entity_resource_operate_record jjj,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) jj
+                where jjj.id=jj.id and jjj.op_level = 4 and jjj.resource_type=3)j on j.resource_id=a.id
+            left join (
+                select kkk.* from entity_resource_operate_record kkk,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) kk
+                where kkk.id=kk.id and kkk.op_level = 3 and kkk.resource_type=3)k on k.resource_id=a.id
+        </if>
+        <if test="core=='user1'"><!--teacher-->
+            <include refid="teacherSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+                from (select system_id from neworiental_user.entity_profile_teacher
+                where system_id &gt; ${boundary} order by system_id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+                from (select system_id from neworiental_user.entity_profile_teacher
+                where system_id &lt; ${boundary} order by system_id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+                from (select system_id from neworiental_user.entity_profile_teacher where system_id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by system_id asc) tt
+            </if>
+            left join neworiental_user.entity_profile_teacher aa on aa.system_id=tt.system_id
+            left join neworiental_user.entity_user bb on bb.system_id = aa.system_id
+            left join neworiental_user.l_extend_user cc on cc.system_id = bb.system_id
+            where bb.system_id is not null
+        </if>
+        <if test="core=='user2'"><!--student-->
+            <include refid="studentSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select system_id from neworiental_user.entity_profile_student
+                where system_id &gt; ${boundary} order by system_id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select system_id from neworiental_user.entity_profile_student
+                where system_id &lt; ${boundary} order by system_id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select system_id from neworiental_user.entity_profile_student where system_id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by system_id asc) tt
+            </if>
+            left join neworiental_user.entity_profile_student aa on aa.system_id=tt.system_id
+            left join neworiental_user.entity_user bb on bb.system_id = aa.system_id
+            left join neworiental_user.l_extend_user cc on cc.system_id = bb.system_id
+            where bb.system_id is not null
+        </if>
+        <if test="core=='user3'"><!--parent-->
+            <include refid="parentSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select system_id from neworiental_user.entity_profile_parent
+                where system_id &gt; ${boundary} order by system_id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select system_id from neworiental_user.entity_profile_parent
+                where system_id &lt; ${boundary} order by system_id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select system_id from neworiental_user.entity_profile_parent where system_id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by system_id asc) tt
+            </if>
+            left join neworiental_user.entity_profile_parent aa on aa.system_id=tt.system_id
+            left join neworiental_user.entity_user bb on bb.system_id = aa.system_id
+            left join neworiental_user.l_extend_user cc on cc.system_id = bb.system_id
+            where bb.system_id is not null
+        </if>
+        <if test="core=='exercise'">
+            <include refid="exerciseSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_exercise where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_exercise where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_exercise where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join entity_exercise a on a.id=t.id
+            -- left join entity_exercise_simul b on b.exercise_id = a.id
+            left join entity_exercise_paper c on c.exercise_id = a.id
+            left join entity_exercise_type d on d.id = a.category
+            left join entity_teaching_chapter e on e.id = a.chapter_id
+            left join entity_teaching_chapter f on f.id = e.parent_id
+            left join entity_teaching_chapter g on g.id = f.parent_id
+            left join counter_res h on h.object_id = a.id and h.object_type = 9 and h.user_id=a.created_by
+            left join (
+                select iii.* from entity_resource_operate_record iii,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) ii
+                where iii.id=ii.id and iii.op_level = 2 and iii.resource_type=2)i on i.resource_id=a.id
+            left join (
+                select jjj.* from entity_resource_operate_record jjj,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) jj
+                where jjj.id=jj.id and jjj.op_level = 4 and jjj.resource_type=2)j on j.resource_id=a.id
+            left join (
+                select kkk.* from entity_resource_operate_record kkk,
+                    (select max(aa.id) id,aa.resource_id from entity_resource_operate_record aa where aa.op_type !='5' group by aa.resource_id) kk
+                where kkk.id=kk.id and kkk.op_level = 3 and kkk.resource_type=2)k on k.resource_id=a.id
+        </if>
+        <if test="core=='school2'">
+            <include refid="school2SelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_public_school where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_public_school where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_public_school where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join entity_public_school a on a.id=t.id
+        </if>
+        <if test="core=='school4'">
+            <include refid="school4SelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_private_school where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_private_school where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_private_school where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join entity_private_school a on a.id=t.id
+        </if>
+        <if test="core=='host'">
+            <include refid="hostSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from dynamic_host where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from dynamic_host where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from dynamic_host where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join dynamic_host a on a.id=t.id
+        </if>
+        <if test="core=='subject'">
+            <include refid="subjectSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_subject where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_subject where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_subject where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join entity_subject a on a.id=t.id
+        </if>
+        <if test="core=='my_resource'">
+            <include refid="myResourceSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+            from (select id from entity_my_resource where id &gt; ${boundary} order by id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+            from (select id from entity_my_resource where id &lt; ${boundary} order by id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+            from (select id from entity_my_resource where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) tt
+            </if>
+            left join entity_my_resource a on a.id=tt.id
+            left join entity_res_courseware b on b.id=a.resource_id and a.resource_type=1
+            left join entity_teaching_chapter bt on bt.id = b.chapter_id
+            left join entity_teaching_chapter bt2 on bt2.id = bt.parent_id
+            left join entity_teaching_chapter bt3 on bt3.id = bt2.parent_id
+            left join entity_exercise c on c.id=a.resource_id and a.resource_type=2
+            left join entity_teaching_chapter ct on ct.id = c.chapter_id
+            left join entity_teaching_chapter ct2 on ct2.id = ct.parent_id
+            left join entity_teaching_chapter ct3 on ct3.id = ct2.parent_id
+            left join entity_res_clip d on d.id=a.resource_id and a.resource_type=3
+            left join entity_teaching_chapter dt on dt.id = d.chapter_id
+            left join entity_teaching_chapter dt2 on dt2.id = dt.parent_id
+            left join entity_teaching_chapter dt3 on dt3.id = dt2.parent_id
+        </if>
+        <if test="core=='lk_resource'">
+            <include refid="lkResourceSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+                from (select id from link_custom_list_resource where id &gt; ${boundary} order by id asc limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+                from (select id from link_custom_list_resource where id &lt; ${boundary} order by id desc limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+                from (select id from link_custom_list_resource where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) tt
+            </if>
+            left join link_custom_list_resource a on a.id=tt.id
+            left join entity_res_courseware b on b.id=a.resource_id and a.resource_type=1
+            left join entity_teaching_chapter bt on bt.id = b.chapter_id
+            left join entity_teaching_chapter bt2 on bt2.id = bt.parent_id
+            left join entity_teaching_chapter bt3 on bt3.id = bt2.parent_id
+            left join entity_exercise c on c.id=a.resource_id and a.resource_type=2
+            left join entity_teaching_chapter ct on ct.id = c.chapter_id
+            left join entity_teaching_chapter ct2 on ct2.id = ct.parent_id
+            left join entity_teaching_chapter ct3 on ct3.id = ct2.parent_id
+            left join entity_res_clip d on d.id=a.resource_id and a.resource_type=3
+            left join entity_teaching_chapter dt on dt.id = d.chapter_id
+            left join entity_teaching_chapter dt2 on dt2.id = dt.parent_id
+            left join entity_teaching_chapter dt3 on dt3.id = dt2.parent_id
+            left join entity_course_package e on e.id=a.resource_id and a.resource_type=4
+            left join entity_teaching_chapter et on et.id = e.chapter_id
+            left join entity_teaching_chapter et2 on et2.id = et.parent_id
+            left join entity_teaching_chapter et3 on et3.id = et2.parent_id
+        </if>
+
+        <if test="core=='lq_resource'">
+            <include refid="lqResourceSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+                FROM (SELECT id FROM link_custom_question_resource WHERE id &gt; ${boundary} ORDER BY id ASC limit ${rows}) tt
+            </if>
+            <if test="list==null and sort == 'desc'">
+                FROM (SELECT id FROM link_custom_question_resource WHERE id &lt; ${boundary} ORDER BY id DESC limit ${rows}) tt
+            </if>
+            <if test="list!=null and list.size()>0">
+                FROM (SELECT id FROM link_custom_question_resource WHERE id IN
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                ORDER BY id ${sort}) tt
+            </if>
+            LEFT JOIN link_custom_question_resource a ON a.id = tt.id
+            LEFT JOIN entity_question b ON b.id = a.question_id
+            LEFT JOIN entity_custom_list c3 ON c3.id = a.custom_list_id
+            LEFT JOIN entity_custom_list c2 ON c2.id = c3.parent_id
+            LEFT JOIN entity_custom_list c1 ON c1.id = c2.parent_id
+        </if>
+
+        <if test="core=='respackage'">
+            <include refid="respackageSelectPart"/>
+            <if test="list==null and sort == 'asc'">
+                from (select id from entity_respackage where id &gt; ${boundary} order by id asc limit ${rows}) t
+            </if>
+            <if test="list==null and sort == 'desc'">
+                from (select id from entity_respackage where id &lt; ${boundary} order by id desc limit ${rows}) t
+            </if>
+            <if test="list!=null and list.size()>0">
+                from (select id from entity_respackage where id in
+                <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+                order by id ${sort}) t
+            </if>
+            left join entity_respackage a on a.id=t.id
+            left join entity_teaching_directory b on b.id=a.directory_id
+        </if>
+    </select>
+    <!-- -->
+    <select id="findId" resultType="Long">
+        <if test="sort == 'asc'">
+            select a.${column} from ${table} a where a.${column} &gt; ${boundary} order by a.${column} asc limit ${rows}
+        </if>
+        <if test="sort == 'desc'">
+            select a.${column} from ${table} a where a.${column} &lt; ${boundary} order by a.${column} desc limit
+            ${rows}
+        </if>
+    </select>
+
+    <select id="findSame" resultType="hashmap">
+            select
+                (select bb.org_id from neworiental_user.entity_user bb where bb.system_id=a.upload_id) org_id,
+                (select group_concat('series_id:',aa.series_id, '`~`','series_name:', bb.`name` separator '`|`')
+                   from link_question_series aa, entity_seriess bb where aa.question_id = a.id and aa.series_id = bb.id) __series,
+                (select group_concat('topic_id:',aa.topic_id, '`~`','topic_mastery:',ifnull(aa.mastery,0), '`~`','topic_name:',bb.`name` separator '`|`' )
+                   from link_question_topic aa, entity_topic bb where aa.question_id = a.id and aa.topic_id = bb.id) __topic,
+                (select group_concat('chapter_id:',aa.chapter_id separator '`|`') from link_question_chapter aa where aa.question_id = a.id) __chapter,
+                (select group_concat('chapter_id1:',aa.chapter_id separator '`|`') from link_question_chapter aa /*一级章节*/
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=1
+                where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=1) __chapter1,
+                (select group_concat('chapter_id2:',aa.chapter_id,'`~`','chapter_id1:',bb.parent_id separator '`|`') from link_question_chapter aa
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=2  /*二级章节并关联出父一级章节*/
+                where aa.question_id = a.id) __chapter2,
+                (select group_concat('chapter_id3:',aa.chapter_id,'`~`','chapter_id2:',bb.parent_id,'`~`','chapter_id1:',cc.parent_id separator '`|`')
+                   from link_question_chapter aa
+                   left join entity_teaching_chapter bb on bb.id=aa.chapter_id and bb.`level`=3  /*三级章节并关联出父二级章节及祖父一级章节*/
+                   left join entity_teaching_chapter cc on cc.id=bb.parent_id
+                where aa.question_id = a.id and aa.chapter_id = bb.id and bb.`level`=3) __chapter3,
+                (select group_concat('custom_list_id:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa where aa.question_id = a.id) __directory,
+                (select group_concat('custom_list_id1:',aa.custom_list_id separator '`|`') from link_custom_question_resource aa /*一级目录*/
+                   left join entity_custom_list bb on bb.id= aa.custom_list_id and bb.`level`=1
+                  where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=1) __directory1,
+                (select group_concat('custom_list_id2:',aa.custom_list_id,'`~`','custom_list_id1:',bb.parent_id separator '`|`') from link_custom_question_resource aa
+                   left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=2  /*二级目录并关联出父一级目录*/
+                  where aa.question_id = a.id) __directory2,
+                (select group_concat('custom_list_id3:',aa.custom_list_id,'`~`','custom_list_id2:',bb.parent_id,'`~`','custom_list_id1:',cc.parent_id separator '`|`')
+                   from link_custom_question_resource aa
+                   left join entity_custom_list bb on bb.id=aa.custom_list_id and bb.`level`=3  /*三级目录并关联出父二级目录及祖父一级目录*/
+                   left join entity_custom_list cc on cc.id=bb.parent_id
+                  where aa.question_id = a.id and aa.custom_list_id = bb.id and bb.`level`=3) __directory3,
+                t.same_num,t.same_score,t.create_time,d.`name` question_group_name,a.*
+            from (
+                select z.id,
+                    (case when b.question_id is not null then (case when b.same_num is null then (0-z.id)
+                                                                    else (b.same_num-9223372036854775807) end)
+                          when c.question_id is not null then (c.same_num) else (0-z.id) end) same_num,
+                    (case when b.question_id is not null then b.same_score
+                          when c.question_id is not null then c.same_score else null end) same_score,
+                    (case when b.question_id is not null then b.create_time
+                          when c.question_id is not null then c.create_time else null end) create_time
+                from entity_question z
+                left join (select bb.* from (select aaa.same_num,max(aaa.same_score) same_score
+                                             from entity_question_same aaa group by aaa.same_num ) aa
+                          left join entity_question_same bb on bb.same_num=aa.same_num and bb.same_score=aa.same_score) b
+                                           on b.question_id=z.id
+                          left join entity_question_same c on c.question_id=z.id and b.question_id is null
+                          where z.id &gt; ${boundary} and (b.question_id is not null or c.question_id is not null)
+                          order by id asc limit ${rows}) t
+                left join entity_question a on a.id=t.id
+                left join entity_group d on d.id=a.question_group
+    </select>
+</mapper>
